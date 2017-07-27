@@ -116,9 +116,8 @@ function readDoc($doc){
 //Writes to the doc
 function writeDoc($doc,$newString){
 	$handle = fopen($doc,'a');
-	$newContents = fwrite($handle, $newString);
+	fwrite($handle, $newString);
 	fclose($handle);
-	return $newcontents;
 }
 
 function useSameLine(){

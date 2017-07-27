@@ -20,7 +20,7 @@ function titleBar(){
 //                                        makeContactArray
 //===============================================================================================
 function makeContactArray($doc){
-  	$contactsArray = readDoc($doc);
+  $contactsArray = readDoc($doc);
 	$contactsArray = explode("\n",$contactsArray);
 	foreach ($contactsArray as $key => $person) {
 	    $person = explode('|',$person);
@@ -83,11 +83,13 @@ function options($doc){
 	    break;
     case 2:
     	//Add
-	    echo "You have selected Add Contact\n";
+      clearScreen();
+	    titleBar();
+	    addContact(FILENAME);
 	    break;
     case 3:
     	//Delete
-	    echo "You have selected Delete Contact\n";
+      deleteContact(FILENAME);
 	    break;
     case 4:
     	//Search
@@ -130,15 +132,37 @@ function searchContacts($contactArray){
   return options(FILENAME);
 }
 
+//===============================================================================================
+//                                       Add Contact Function
+//===============================================================================================
 
+function addContact($doc){
+  fwrite(STDOUT,"ENTER CONTACT NAME: ");
+  $newContact = trim(fgets(STDIN));
+  $newContact = $newContact . "|";
+  fwrite(STDOUT,"ENTER CONTACT NUMBER: ");
+  $newContact = $newContact . fgets(STDIN);
+  writeDoc($doc,$newContact);
+  return options(FILENAME);
+}
 
-
-
-
-
-
-
-
+function deleteContact($doc){
+  fwrite(STDOUT,'ENTER NAME FOR DELETION: ');
+  $name = trim(fgets(STDIN));
+  $name = strtoupper($name);
+  $contactList = readDoc($doc);
+  $offset = stripos($contactList, $name);
+  $a = stripos($contactList,"\n",$offset)-$offset;
+  var_dump($a);
+  for ($i=0; $i <$a  ; $i++) {
+    $spaces .= "\t";
+  }
+  $contacts = fopen($doc,'r+');
+  fseek($contacts,$offset);
+  fwrite($contacts,$spaces);
+  fclose($contacts);
+  return options(FILENAME);
+}
 //===============================================================================================
 //                                        Actual Program
 //===============================================================================================

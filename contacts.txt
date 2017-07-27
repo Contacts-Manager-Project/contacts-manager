@@ -1,10 +1,10 @@
-Jack Blank|1231231234
+Jack Blan|1231234
 Jane Doe|2342342345
 Sam Space|3453453456
 John Doe|1234567890
 Jim Blooc|2103335560
 Lawyer Davis|2104444444
-Texas Hammer|2102535800
+																							
 Wayne Wright|2108888888
 Becky J.|2104681581
 Dimitri|2108027289
