@@ -29,6 +29,7 @@ function makeContactArray($doc){
 	    $personInfo['number'] = $person[1];
 	    $contactsArray[$key] = $personInfo;
     }
+   
     return $contactsArray;
   }
 
@@ -111,9 +112,9 @@ function options($doc){
 //                                        Search Function
 //===============================================================================================
 
-// function searchContacts() {
+function searchContacts($contactArray){
 
-// }
+}
 
 
 
