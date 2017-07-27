@@ -125,3 +125,6 @@ function useSameLine(){
 	echo `tput cuu1`;
 	echo `tput el`;
 }
+function clearScreen(){
+	echo `clear && printf '\e[3J'`;
+}
