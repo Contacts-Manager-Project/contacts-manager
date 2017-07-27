@@ -2,12 +2,18 @@
 require 'lib.php';
 //======================================================================
 // Using "readDoc() and writeDoc()" from lib.php
+function titleBar(){
+	printf("|=====================================================================================|\n");
+	printf("|   ,---.          |              |             ,-.-.                                 |\n");
+	printf("|   |    ,---.,---.|--- ,---.,---.|--- ,---.    | | |,---.,---.,---.,---.,---.,---.   |\n");
+	printf("|   |    |   ||   ||    ,---||    |    `---.    | | |,---||   |,---||   ||---'|       |\n");
+	printf("|   `---'`---'`   '`---'`---^`---'`---'`---'    ` ' '`---^`   '`---^`---|`---'`       |\n");
+	printf("|                                                                   `---'             |\n");
+	printf("|=====================================================================================|\n");
+}
 
 function viewContacts($doc){
   $contents = readDoc($doc);
-  echo str_pad('NAME',10);
-  echo str_pad('|',10);
-  echo "NUMBER\n";
   $contents = explode("\n",$contents);
   foreach ($contents as $key => $person) {
     $person = explode('|',$person);
@@ -15,13 +21,27 @@ function viewContacts($doc){
     $personInfo['name'] = $person[0];
     $personInfo['number'] = $person[1];
     $contents[$key] = $personInfo;
+    }
+  
+  $names = [];
+  foreach ($contents as $key => $value) {
+  		array_push($names, $value['name']);
   }
+  $names = array_map('strlen',$names);
+  rsort($names);
+  $longest = $names[0];
+
+  echo str_pad('NAME ',$longest);
+  echo ' | ';
+  echo "NUMBER\n";
+
   foreach ($contents as $key => $person) {
-    echo $person['name'] . "|" . $person['number'] . PHP_EOL;
+    echo str_pad($person['name'], $longest) . " | " . str_pad($person['number'], $longest) . PHP_EOL;
   }
   return options($doc);
 }
-//======================================================================
+
+
 function promptUser(){
   do{
     fwrite(STDOUT, "Please Select an Action by Number: ");
@@ -35,6 +55,8 @@ function options($doc){
   switch (promptUser()) {
     case 1:
     echo "You have selected Contacts\n";
+    clearScreen();
+    titleBar();
     viewContacts($doc);
     break;
     case 2:
@@ -59,18 +81,37 @@ function options($doc){
     break;
   }
 }
+//===============================================================================================
+//                                        Actual Program
+//===============================================================================================
 $doc = 'contacts.txt';
 
-
-	echo `clear`;
-
-
-	printf("|=====================================================================================|\n");
-	printf("|   ,---.          |              |             ,-.-.                                 |\n");
-	printf("|   |    ,---.,---.|--- ,---.,---.|--- ,---.    | | |,---.,---.,---.,---.,---.,---.   |\n");
-	printf("|   |    |   ||   ||    ,---||    |    `---.    | | |,---||   |,---||   ||---'|       |\n");
-	printf("|   `---'`---'`   '`---'`---^`---'`---'`---'    ` ' '`---^`   '`---^`---|`---'`       |\n");
-	printf("|                                                                   `---'             |\n");
-	printf("|=====================================================================================|\n");
-
+clearScreen();
+titleBar();
 options($doc);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
