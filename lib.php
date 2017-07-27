@@ -31,7 +31,7 @@ function is_vowel($arg)
 			case 'u':
 				return true;
 				break;
-			
+
 			default:
 				return false;
 				break;
@@ -48,7 +48,7 @@ function first($arg)
 	}
 }
 function second($arg)
-{	
+{
 	if (count($arg) > 1){
 		if (is_array($arg)){
 			return next($arg);
@@ -94,7 +94,7 @@ function randColor(){
 	for ($i = 0; $i <= 5; $i++ ){
 		$num .= random('ABCDEF0123456789');
 	}
-	
+
 	echo "\$randColor: # $num;" . PHP_EOL;
 }
 
@@ -106,26 +106,22 @@ function append($fileName, $string)
 }
 
 //Reads the doc
-function readDoc($handle, $doc){
-	$contents = fread($handle, filesize($doc));
+function readDoc($doc){
+	$handle = fopen($doc,'r');
+	$contents = trim(fread($handle, filesize($doc)));
+	fclose($handle);
 	return $contents;
 }
 
 //Writes to the doc
-function writeDoc($handle, $newString){
+function writeDoc($doc,$newString){
+	$handle = fopen($doc,'a');
 	$newContents = fwrite($handle, $newString);
+	fclose($handle);
+	return $newcontents;
 }
 
 function useSameLine(){
 	echo `tput cuu1`;
 	echo `tput el`;
 }
-
-
-
-
-
-
-
-
-
