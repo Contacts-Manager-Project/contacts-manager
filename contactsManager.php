@@ -20,7 +20,7 @@ function titleBar(){
 //                                        makeContactArray
 //===============================================================================================
 function makeContactArray($doc){
-  	$contactsArray = readDoc($doc);
+  $contactsArray = readDoc($doc);
 	$contactsArray = explode("\n",$contactsArray);
 	foreach ($contactsArray as $key => $person) {
 	    $person = explode('|',$person);
@@ -29,7 +29,7 @@ function makeContactArray($doc){
 	    $personInfo['number'] = $person[1];
 	    $contactsArray[$key] = $personInfo;
     }
-   
+
     return $contactsArray;
   }
 
@@ -37,8 +37,8 @@ function makeContactArray($doc){
 //                                        viewContacts
 //===============================================================================================
 function viewContacts($contactsArray){
-  
-  
+
+
   $names = [];
   foreach ($contactsArray as $key => $value) {
   		array_push($names, $value['name']);
@@ -83,15 +83,19 @@ function options($doc){
 	    break;
     case 2:
     	//Add
-	    echo "You have selected Add Contact\n";
+      clearScreen();
+	    titleBar();
+	    addContact(FILENAME);
 	    break;
     case 3:
     	//Delete
-	    echo "You have selected Delete Contact\n";
+      deleteContact(FILENAME);
 	    break;
     case 4:
     	//Search
-	    echo "You have selected Search Contacts\n";
+      clearScreen();
+	    titleBar();
+      searchContacts(makeContactArray($doc));
 	    break;
     case 5:
     	//Exit
@@ -113,18 +117,52 @@ function options($doc){
 //===============================================================================================
 
 function searchContacts($contactArray){
-
+  fwrite(STDOUT,'ENTER A NAME: ');
+  $name = trim(fgets(STDIN));
+  $name = strtoupper($name);
+  $names = [];
+  foreach ($contactArray as $key => $value) {
+  		$names{strtoupper($value['name'])} = $value['number'];
+  }
+  if (array_key_exists($name,$names)) {
+    echo "Their number is: " . $names[$name];
+  }else {
+    echo "NAME DOES NOT EXIST";
+  }
+  return options(FILENAME);
 }
 
+//===============================================================================================
+//                                       Add Contact Function
+//===============================================================================================
 
+function addContact($doc){
+  fwrite(STDOUT,"ENTER CONTACT NAME: ");
+  $newContact = trim(fgets(STDIN));
+  $newContact = $newContact . "|";
+  fwrite(STDOUT,"ENTER CONTACT NUMBER: ");
+  $newContact = $newContact . fgets(STDIN);
+  writeDoc($doc,$newContact);
+  return options(FILENAME);
+}
 
-
-
-
-
-
-
-
+function deleteContact($doc){
+  fwrite(STDOUT,'ENTER NAME FOR DELETION: ');
+  $name = trim(fgets(STDIN));
+  $name = strtoupper($name);
+  $contactList = readDoc($doc);
+  $offset = stripos($contactList, $name);
+  $a = stripos($contactList,"\n",$offset)-$offset;
+  var_dump($a);
+  for ($i=0; $i <$a  ; $i++) {
+    $spaces .= "\t";
+  }
+  $contacts = fopen($doc,'r+');
+  fseek($contacts,$offset);
+  fwrite($contacts,$spaces);
+  fclose($contacts);
+  return options(FILENAME);
+}
 //===============================================================================================
 //                                        Actual Program
 //===============================================================================================
@@ -133,29 +171,3 @@ function searchContacts($contactArray){
 clearScreen();
 titleBar();
 options(FILENAME);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
