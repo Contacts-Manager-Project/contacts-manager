@@ -29,7 +29,7 @@ function makeContactArray($doc){
 	    $personInfo['number'] = $person[1];
 	    $contactsArray[$key] = $personInfo;
     }
-   
+
     return $contactsArray;
   }
 
@@ -37,8 +37,8 @@ function makeContactArray($doc){
 //                                        viewContacts
 //===============================================================================================
 function viewContacts($contactsArray){
-  
-  
+
+
   $names = [];
   foreach ($contactsArray as $key => $value) {
   		array_push($names, $value['name']);
@@ -91,7 +91,9 @@ function options($doc){
 	    break;
     case 4:
     	//Search
-	    echo "You have selected Search Contacts\n";
+      clearScreen();
+	    titleBar();
+      searchContacts(makeContactArray($doc));
 	    break;
     case 5:
     	//Exit
@@ -113,7 +115,19 @@ function options($doc){
 //===============================================================================================
 
 function searchContacts($contactArray){
-
+  fwrite(STDOUT,'ENTER A NAME: ');
+  $name = trim(fgets(STDIN));
+  $name = strtoupper($name);
+  $names = [];
+  foreach ($contactArray as $key => $value) {
+  		$names{strtoupper($value['name'])} = $value['number'];
+  }
+  if (array_key_exists($name,$names)) {
+    echo "Their number is: " . $names[$name];
+  }else {
+    echo "NAME DOES NOT EXIST";
+  }
+  return options(FILENAME);
 }
 
 
@@ -133,29 +147,3 @@ function searchContacts($contactArray){
 clearScreen();
 titleBar();
 options(FILENAME);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
