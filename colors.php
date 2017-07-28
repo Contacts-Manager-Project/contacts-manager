@@ -32,6 +32,6 @@ function cyan($text, $bold = false) {
 // echo magenta('magenta', true) . cyan('cyan', true) . PHP_EOL;
 // echo magenta('magenta') . cyan('cyan') . PHP_EOL;
 
-$cowsay = `cowsay -f dragon moo`;
+// $cowsay = `cowsay -f dragon moo`;
 
-echo blue($cowsay);
+// echo blue($cowsay);

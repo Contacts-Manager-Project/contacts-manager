@@ -30,14 +30,22 @@ function makeContactArray($doc){
 	$contactsArray = explode("\n",$contactsArray);
   $contacts =[];
 	foreach ($contactsArray as $key => $person) {
-      if ($person[0] == "\0" {
+      if ($person[0] == "\0") {
         continue;
       }else {
         $person = explode('|',$person);
-        $person[1] = substr($person[1],0,3) . "-" . substr($person[1],3,3) . "-" . substr($person[1],6,4);
-        $personInfo['name'] = $person[0];
-        $personInfo['number'] = $person[1];
-        array_push($contacts,$personInfo);
+
+        if (strlen($person[1]) == 10){
+          $person[1] = substr($person[1],0,3) . "-" . substr($person[1],3,3) . "-" . substr($person[1],6,4);
+          $personInfo['name'] = $person[0];
+          $personInfo['number'] = $person[1];
+          array_push($contacts,$personInfo);
+        } else {
+          $person[1] = substr($person[1],0,3) . "-" . substr($person[1],3,4);
+          $personInfo['name'] = $person[0];
+          $personInfo['number'] = $person[1];
+          array_push($contacts,$personInfo);
+        }
       }
     }
 
@@ -57,11 +65,15 @@ function viewContacts($contactsArray){
   $names = array_map('strlen',$names);
   rsort($names);
   $longest = $names[0];
-  echo cyan(str_pad('NAME ', $longest));
+  echo cyan(str_pad("=============================", $longest));
+  echo PHP_EOL . str_pad("", 4) . cyan(str_pad("NAME", $longest -4));
   echo cyan(' | ');
-  echo cyan("NUMBER\n");
+  echo str_pad("", 4). cyan("NUMBER\n");
+  echo cyan(str_pad("=============================\n", $longest));
+
+
   foreach ($contactsArray as $key => $person) {
-    echo str_pad($person['name'], $longest) . " | " . str_pad($person['number'], $longest) . PHP_EOL;
+    echo str_pad($person['name'], $longest) . cyan(" | ") . str_pad($person['number'], $longest) . PHP_EOL;
   }
   return options(FILENAME);
 }
@@ -82,7 +94,7 @@ function promptUser(){
 //                                        options
 //===============================================================================================
 function options($doc){
-  fwrite(STDOUT, PHP_EOL . red('Actions:') . "\n 1. View Contacts\n 2. Add Contact\n 3. Delete Contact\n 4. Search Contacts\n 5. Exit\n");
+  fwrite(STDOUT, PHP_EOL . red('Actions:') . "\n 1. View Contacts\n 2. Add Contact\n 3. Delete Contact\n 4. Search Contacts\n 5. Reset Screen\n 6. Exit\n");
   switch (promptUser()) {
     case 1:
     	//View Contacts
@@ -90,7 +102,7 @@ function options($doc){
 	    getWH();
 	    viewContacts(makeContactArray($doc));
 	    break;
-    case 2:
+    case 2 :
     	//Add
       clearScreen();
 	    getWH();
@@ -107,21 +119,27 @@ function options($doc){
       searchContacts(makeContactArray($doc));
 	    break;
     case 5:
-    	//Exit
-	    echo "You have selected Exit\n";
-	    break;
-      case 6:
         clearScreen();
         getWH();
         options(FILENAME);
         break;
-    case "\n":
-	    useSameLine();
-	    echo "Please enter a valid response!\n";
-	    break;
+    case 6:
+      //Exit
+      if (`cowsay moo`){
+        clearScreen();
+        echo cyan(`cowsay Goodbye`, true);
+      } else {
+        clearScreen();
+        echo cyan("Goodbye");
+      }
+      break;
     default:
-	    useSameLine();
-	    echo "Please enter a valid response: ";
+      echo "Please enter a valid response!\n";
+      sleep(1);
+	    clearScreen();
+      getWH();
+      options(FILENAME);
+      promptUser();
 	    break;
   }
 }
@@ -156,9 +174,15 @@ function addContact($doc){
   fwrite(STDOUT,"ENTER CONTACT NAME: ");
   $newContact = trim(fgets(STDIN));
   $newContact = $newContact . "|";
-  fwrite(STDOUT,"ENTER CONTACT NUMBER: ");
-  $newContact = $newContact . fgets(STDIN);
 
+  $number;
+  do {
+    fwrite(STDOUT,"ENTER CONTACT NUMBER BETWEEN 7 AND 10 DIGITS: ");
+    $number = fgets(STDIN);
+    // var_dump($number);
+    // var_dump(strlen($number));
+  } while (strlen($number) !== 11 && strlen($number) !== 8);
+  $newContact = $newContact . $number;
   writeDoc($doc,$newContact);
   return options(FILENAME);
 }
@@ -173,12 +197,12 @@ function deleteContact($doc){
     $contactList = readDoc($doc);
     $offset = stripos($contactList, $name);
     $end = stripos($contactList,"\n",$offset) - $offset;
-    var_dump($end);
+    // var_dump($end);
     $spaces = "";
   for ($i=0; $i < $end  ; $i++) {
     $spaces .= "\0";
   }
-  var_dump($spaces);
+  // var_dump($spaces);
   echo "$spaces";
     $contacts = fopen($doc,'r+');
     fseek($contacts,$offset);
