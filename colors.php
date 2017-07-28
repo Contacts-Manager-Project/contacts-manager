@@ -27,10 +27,10 @@ function magenta($text, $bold = false) {
 function cyan($text, $bold = false) {
     return colorize($text, 36, $bold);
 }
-echo blue('blue', true) . red('red', true) . green('green', true) . yellow('yellow') . PHP_EOL;
-echo blue('blue') . red('red') . green('green') . yellow('yellow') . PHP_EOL;
-echo magenta('magenta', true) . cyan('cyan', true) . PHP_EOL;
-echo magenta('magenta') . cyan('cyan') . PHP_EOL;
+// echo blue('blue', true) . red('red', true) . green('green', true) . yellow('yellow') . PHP_EOL;
+// echo blue('blue') . red('red') . green('green') . yellow('yellow') . PHP_EOL;
+// echo magenta('magenta', true) . cyan('cyan', true) . PHP_EOL;
+// echo magenta('magenta') . cyan('cyan') . PHP_EOL;
 
 $cowsay = `cowsay -f dragon moo`;
 
