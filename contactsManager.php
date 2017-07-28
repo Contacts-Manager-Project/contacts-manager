@@ -1,24 +1,29 @@
 <?php
 require 'lib.php';
+require 'colors.php';
 define("FILENAME", 'contacts.txt');
 // Using "readDoc() and writeDoc()" from lib.php
-//======================================================================
-//						Title Bar
-//======================================================================
-function titleBar(){
-	printf("|=====================================================================================|\n");
-	printf("|   ,---.          |              |             ,-.-.                                 |\n");
-	printf("|   |    ,---.,---.|--- ,---.,---.|--- ,---.    | | |,---.,---.,---.,---.,---.,---.   |\n");
-	printf("|   |    |   ||   ||    ,---||    |    `---.    | | |,---||   |,---||   ||---'|       |\n");
-	printf("|   `---'`---'`   '`---'`---^`---'`---'`---'    ` ' '`---^`   '`---^`---|`---'`       |\n");
-	printf("|                                                                   `---'             |\n");
-	printf("|=====================================================================================|\n");
+
+ 
+//===============================================================================================
+//                                          WH checker
+//===============================================================================================
+
+function getWH() {
+  $WIDTH = trim(`tput cols`);
+  $HEIGHT = trim(`tput lines`);
+
+  if ($WIDTH >= 78){
+      titleBar();  
+    } else if ($WIDTH <= 78){
+    halfTitle();
+  }
 }
 
 
-//===============================================================================================
-//                                        makeContactArray
-//===============================================================================================
+// //===============================================================================================
+// //                                        makeContactArray
+// //===============================================================================================
 function makeContactArray($doc){
   $contactsArray = readDoc($doc);
 	$contactsArray = explode("\n",$contactsArray);
@@ -46,10 +51,9 @@ function viewContacts($contactsArray){
   $names = array_map('strlen',$names);
   rsort($names);
   $longest = $names[0];
-
-  echo str_pad('NAME ',$longest);
-  echo ' | ';
-  echo "NUMBER\n";
+  echo cyan(str_pad('NAME ', $longest));
+  echo cyan(' | ');
+  echo cyan("NUMBER\n");
 
   foreach ($contactsArray as $key => $person) {
     echo str_pad($person['name'], $longest) . " | " . str_pad($person['number'], $longest) . PHP_EOL;
@@ -62,7 +66,7 @@ function viewContacts($contactsArray){
 //===============================================================================================
 function promptUser(){
   do{
-    fwrite(STDOUT, "Please Select an Action by Number: ");
+    fwrite(STDOUT, cyan("Please Select an Action by Number: "));
     $response = trim(fgets(STDOUT));
   }while (!$response);
   return $response;
@@ -73,18 +77,18 @@ function promptUser(){
 //                                        options
 //===============================================================================================
 function options($doc){
-  fwrite(STDOUT, "\n\nActions:\n 1. View Contacts\n 2. Add Contact\n 3. Delete Contact\n 4. Search Contacts\n 5. Exit\n");
+  fwrite(STDOUT, PHP_EOL . red('Actions:') . "\n 1. View Contacts\n 2. Add Contact\n 3. Delete Contact\n 4. Search Contacts\n 5. Exit\n");
   switch (promptUser()) {
     case 1:
     	//View Contacts
 	    clearScreen();
-	    titleBar();
+	    getWH();
 	    viewContacts(makeContactArray($doc));
 	    break;
     case 2:
     	//Add
       clearScreen();
-	    titleBar();
+	    getWH();
 	    addContact(FILENAME);
 	    break;
     case 3:
@@ -94,13 +98,18 @@ function options($doc){
     case 4:
     	//Search
       clearScreen();
-	    titleBar();
+	    getWH();
       searchContacts(makeContactArray($doc));
 	    break;
     case 5:
     	//Exit
 	    echo "You have selected Exit\n";
 	    break;
+      case 6:
+        clearScreen();
+        getWH();
+        options(FILENAME);
+        break;
     case "\n":
 	    useSameLine();
 	    echo "Please enter a valid response!\n";
@@ -127,7 +136,7 @@ function searchContacts($contactArray){
   if (array_key_exists($name,$names)) {
     echo "Their number is: " . $names[$name];
   }else {
-    echo "NAME DOES NOT EXIST";
+    echo red("NAME DOES NOT EXIST");
   }
   return options(FILENAME);
 }
@@ -147,20 +156,20 @@ function addContact($doc){
 }
 
 function deleteContact($doc){
-  fwrite(STDOUT,'ENTER NAME FOR DELETION: ');
-  $name = trim(fgets(STDIN));
-  $name = strtoupper($name);
-  $contactList = readDoc($doc);
-  $offset = stripos($contactList, $name);
-  $a = stripos($contactList,"\n",$offset)-$offset;
-  var_dump($a);
+    fwrite(STDOUT,'ENTER NAME FOR DELETION: ');
+    $name = trim(fgets(STDIN));
+    $name = strtoupper($name);
+    $contactList = readDoc($doc);
+    $offset = stripos($contactList, $name);
+    $a = stripos($contactList,"\n",$offset)-$offset;
+    var_dump($a);
   for ($i=0; $i <$a  ; $i++) {
     $spaces .= "\t";
   }
-  $contacts = fopen($doc,'r+');
-  fseek($contacts,$offset);
-  fwrite($contacts,$spaces);
-  fclose($contacts);
+    $contacts = fopen($doc,'r+');
+    fseek($contacts,$offset);
+    fwrite($contacts,$spaces);
+    fclose($contacts);
   return options(FILENAME);
 }
 //===============================================================================================
@@ -169,5 +178,5 @@ function deleteContact($doc){
 
 
 clearScreen();
-titleBar();
+getWH();
 options(FILENAME);
