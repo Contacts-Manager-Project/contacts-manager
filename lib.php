@@ -108,7 +108,7 @@ function append($fileName, $string)
 //Reads the doc
 function readDoc($doc){
 	$handle = fopen($doc,'r');
-	$contents = trim(fread($handle, filesize($doc)));
+	$contents = fread($handle, filesize($doc));
 	fclose($handle);
 	return $contents;
 }
