@@ -104,7 +104,11 @@ function options($doc){
 	    break;
     case 5:
     	//Exit
-	    echo "You have selected Exit\n";
+	    if (`cowsay moo`){
+        echo `cowsay Goodbye`;
+      } else {
+        echo "Goodbye";
+      }
 	    break;
       case 6:
         clearScreen();
@@ -161,7 +165,7 @@ function addContact($doc){
 //                                       Add Delete Function
 //===============================================================================================
 
-function deleteContact($doc){5
+function deleteContact($doc){
     fwrite(STDOUT,'ENTER NAME FOR DELETION: ');
     $name = trim(fgets(STDIN));
     $name = strtoupper($name);
