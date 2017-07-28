@@ -4,7 +4,7 @@ require 'colors.php';
 define("FILENAME", 'contacts.txt');
 // Using "readDoc() and writeDoc()" from lib.php
 
- 
+
 //===============================================================================================
 //                                          WH checker
 //===============================================================================================
@@ -14,7 +14,7 @@ function getWH() {
   $HEIGHT = trim(`tput lines`);
 
   if ($WIDTH >= 78){
-      titleBar();  
+      titleBar();
     } else if ($WIDTH <= 78){
     halfTitle();
   }
@@ -25,6 +25,7 @@ function getWH() {
 // //                                        makeContactArray
 // //===============================================================================================
 function makeContactArray($doc){
+  clearstatcache();
   $contactsArray = readDoc($doc);
 	$contactsArray = explode("\n",$contactsArray);
 	foreach ($contactsArray as $key => $person) {
@@ -42,7 +43,7 @@ function makeContactArray($doc){
 //                                        viewContacts
 //===============================================================================================
 function viewContacts($contactsArray){
-
+  clearstatcache();
 
   $names = [];
   foreach ($contactsArray as $key => $value) {
@@ -126,6 +127,7 @@ function options($doc){
 //===============================================================================================
 
 function searchContacts($contactArray){
+  clearstatcache();
   fwrite(STDOUT,'ENTER A NAME: ');
   $name = trim(fgets(STDIN));
   $name = strtoupper($name);
@@ -146,6 +148,7 @@ function searchContacts($contactArray){
 //===============================================================================================
 
 function addContact($doc){
+  clearstatcache();
   fwrite(STDOUT,"ENTER CONTACT NAME: ");
   $newContact = trim(fgets(STDIN));
   $newContact = $newContact . "|";
@@ -154,18 +157,22 @@ function addContact($doc){
   writeDoc($doc,$newContact);
   return options(FILENAME);
 }
+//===============================================================================================
+//                                       Add Delete Function
+//===============================================================================================
 
-function deleteContact($doc){
+function deleteContact($doc){5
     fwrite(STDOUT,'ENTER NAME FOR DELETION: ');
     $name = trim(fgets(STDIN));
     $name = strtoupper($name);
     $contactList = readDoc($doc);
     $offset = stripos($contactList, $name);
-    $a = stripos($contactList,"\n",$offset)-$offset;
-    var_dump($a);
-  for ($i=0; $i <$a  ; $i++) {
-    $spaces .= "\t";
+    $spaces = "";
+  for ($i=0; $i < 50  ; $i++) {
+    $spaces .= "\0";
   }
+  var_dump($spaces);
+  echo "$spaces";
     $contacts = fopen($doc,'r+');
     fseek($contacts,$offset);
     fwrite($contacts,$spaces);

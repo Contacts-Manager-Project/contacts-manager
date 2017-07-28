@@ -119,7 +119,12 @@ function writeDoc($doc,$newString){
 	fwrite($handle, $newString);
 	fclose($handle);
 }
-
+function openDoc($doc){
+	$handle =fopen($doc,'r+');
+	$contents = trim(fread($handle, filesize($doc)));
+	fclose($handle);
+	return $contents;
+}
 function useSameLine(){
 	echo `tput cuu1`;
 	echo `tput el`;
@@ -131,7 +136,7 @@ function clearScreen(){
 
 
 	function titleBar(){
-	
+
 printf(cyan("|==============================================================================================================================================|\n"));
 printf(cyan("|                                  ").yellow(',---.          |              |             ,-.-.').cyan("                                                           |\n"));
 printf(cyan("|                                  ").yellow("|    ,---.,---.|--- ,---.,---.|--- ,---.    | | |,---.,---.,---.,---.,---.,---.").cyan("                             |\n"));
@@ -157,5 +162,3 @@ function halfTitle(){
 	printf(cyan("|     ").yellow("                    `---'          ").cyan("    |\n"));
 	printf(cyan("|============================================|\n"));
 }
-
-
