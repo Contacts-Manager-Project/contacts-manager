@@ -26,17 +26,22 @@ function getWH() {
 // //===============================================================================================
 function makeContactArray($doc){
   clearstatcache();
-  $contactsArray = readDoc($doc);
+  $contactsArray = trim(readDoc($doc));
 	$contactsArray = explode("\n",$contactsArray);
+  $contacts =[];
 	foreach ($contactsArray as $key => $person) {
-	    $person = explode('|',$person);
-	    $person[1] = substr($person[1],0,3) . "-" . substr($person[1],3,3) . "-" . substr($person[1],6,4);
-	    $personInfo['name'] = $person[0];
-	    $personInfo['number'] = $person[1];
-	    $contactsArray[$key] = $personInfo;
+      if ($person[0] == "\0" {
+        continue;
+      }else {
+        $person = explode('|',$person);
+        $person[1] = substr($person[1],0,3) . "-" . substr($person[1],3,3) . "-" . substr($person[1],6,4);
+        $personInfo['name'] = $person[0];
+        $personInfo['number'] = $person[1];
+        array_push($contacts,$personInfo);
+      }
     }
 
-    return $contactsArray;
+    return $contacts;
   }
 
 //===============================================================================================
@@ -55,7 +60,6 @@ function viewContacts($contactsArray){
   echo cyan(str_pad('NAME ', $longest));
   echo cyan(' | ');
   echo cyan("NUMBER\n");
-
   foreach ($contactsArray as $key => $person) {
     echo str_pad($person['name'], $longest) . " | " . str_pad($person['number'], $longest) . PHP_EOL;
   }
@@ -104,11 +108,7 @@ function options($doc){
 	    break;
     case 5:
     	//Exit
-	    if (`cowsay moo`){
-        echo `cowsay Goodbye`;
-      } else {
-        echo "Goodbye";
-      }
+	    echo "You have selected Exit\n";
 	    break;
       case 6:
         clearScreen();
@@ -158,6 +158,7 @@ function addContact($doc){
   $newContact = $newContact . "|";
   fwrite(STDOUT,"ENTER CONTACT NUMBER: ");
   $newContact = $newContact . fgets(STDIN);
+
   writeDoc($doc,$newContact);
   return options(FILENAME);
 }
@@ -171,8 +172,10 @@ function deleteContact($doc){
     $name = strtoupper($name);
     $contactList = readDoc($doc);
     $offset = stripos($contactList, $name);
+    $end = stripos($contactList,"\n",$offset) - $offset;
+    var_dump($end);
     $spaces = "";
-  for ($i=0; $i < 50  ; $i++) {
+  for ($i=0; $i < $end  ; $i++) {
     $spaces .= "\0";
   }
   var_dump($spaces);
